@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="FB_Counter" Id="{a69e1dc3-3635-4e47-afe2-841cb2d4d8d9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Counter
+VAR
+	nCounter : UDINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[nCounter := nCounter + 1;
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Counter">
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
