@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.16">
+  <POU Name="FB_ReadCoilsExample" Id="{281f6d03-7aee-409c-8d2e-8670eb07bb83}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ReadCoilsExample
+VAR
+	fbReadCoils : FB_MBReadCoils;
+	fbReadRegisters : FB_MBReadRegs;
+	nReadValue : BYTE;
+	nReadRegsValue : WORD;
+	eReadState : (WAIT, TRIGGER, READ);
+	fbTrigger : R_TRIG;
+	cbLength: UINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbTrigger();
+IF fbTrigger.Q THEN
+	IF eReadState = WAIT THEN
+		eReadState := TRIGGER;
+	END_IF
+END_IF
+CASE eReadState OF
+	WAIT : 
+	// NOTHING
+	TRIGGER : 
+	(*fbReadCoils(
+		sIPAddr:='192.168.10.1' , 
+		nTCPPort:=502, 
+		nUnitID:= 16#FF, 
+		nQuantity:= 1, 
+		nMBAddr:= 0, 
+		cbLength:= SIZEOF(nReadValue), 
+		pDestAddr:= ADR(nReadValue), 
+		bExecute:= TRUE , 
+		tTimeout:= , 
+		bBusy=> , 
+		bError=> , 
+		nErrId=> , 
+		cbRead=> );*)
+	fbReadRegisters(
+		sIPAddr:= '192.168.10.1', 
+		nTCPPort:= 502, 
+		nUnitID:= 16#FF, 
+		nQuantity:= 1, 
+		nMBAddr:= 0, 
+		cbLength:= SIZEOF(nReadRegsValue), 
+		pDestAddr:= ADR(nReadRegsValue), 
+		bExecute:= TRUE, 
+		tTimeout:= , 
+		bBusy=> , 
+		bError=> , 
+		nErrId=> , 
+		cbRead=> );
+		eReadState := READ;
+	READ :
+	(*fbReadCoils(bExecute := FALSE);
+	IF NOT fbReadCoils.bBusy OR fbReadCoils.bError THEN
+		eReadState := WAIT;
+	END_IF*)
+	fbReadRegisters(bExecute := FALSE);
+	IF NOT fbReadRegisters.bBusy AND NOT fbReadRegisters.bError THEN
+		eReadState := TRIGGER;
+	ELSIF fbReadRegisters.bError THEN
+		eReadState := WAIT;
+	END_IF
+		
+END_CASE
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_ReadCoilsExample">
+      <LineId Id="64" Count="0" />
+      <LineId Id="48" Count="1" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="30" Count="1" />
+      <LineId Id="33" Count="12" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="81" Count="12" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="46" Count="1" />
+      <LineId Id="54" Count="2" />
+      <LineId Id="95" Count="2" />
+      <LineId Id="101" Count="1" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
